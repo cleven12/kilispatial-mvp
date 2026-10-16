@@ -1,16 +1,100 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import KiliShowcase from '../components/KiliShowcase.svelte';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="KiliSpatial 3D | Interactive Kilimanjaro Itinerary Showcase">
+  <!-- Sticky Glassmorphic Navigation -->
+  <header class="sticky top-0 z-40 border-b border-white/10 bg-[#080c0a]/80 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center font-mono font-bold text-emerald-400">
+          3D
+        </div>
+        <div>
+          <span class="font-bold tracking-tight text-white">KiliSpatial</span>
+          <span class="text-[11px] font-mono px-2 py-0.5 ml-2 rounded bg-white/5 text-neutral-400 border border-white/10">
+            by Xenohuru
+          </span>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-6 text-sm text-neutral-300">
+        <a href="#showcase" class="hover:text-emerald-400 transition">Interactive Itinerary</a>
+        <a href="#integration" class="hover:text-emerald-400 transition">postMessage API</a>
+        <a href="https://kili.xenohuru.com" target="_blank" rel="noopener" class="hover:text-emerald-400 transition">
+          Full 3D Engine ↗
+        </a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a
+          href="#inquire"
+          class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-black transition"
+        >
+          License for Your Agency
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main id="showcase" class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+    <!-- Hero Intro Banner -->
+    <div class="max-w-3xl mb-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-mono mb-4">
+        <span>● Live Interactive Tour Operator MVP</span>
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+        Turn Static Kilimanjaro Itineraries Into <span class="text-emerald-400">Interactive 3D Expeditions.</span>
+      </h1>
+      <p class="mt-3 text-base text-neutral-400 leading-relaxed">
+        Click any itinerary day below to fly the 3D camera across Mount Kilimanjaro’s camps—from Marangu and Machame Gates up to Lava Tower, the Barranco Wall, and Uhuru Peak (5,895m).
+      </p>
+    </div>
+
+    <!-- Hydrated Svelte 5 Island -->
+    <KiliShowcase client:load />
+
+    <!-- B2B Architecture & How-It-Works Section -->
+    <section id="integration" class="mt-20 pt-12 border-t border-white/10">
+      <div class="max-w-2xl mb-8">
+        <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">Zero-Dependency Architecture</span>
+        <h2 class="text-2xl font-bold text-white mt-1">Built for Any Tour Operator Stack</h2>
+        <p class="text-sm text-neutral-400 mt-1">
+          Whether your agency runs on Astro, WordPress, Django, Next.js, or Webflow, KiliSpatial drops in with a single responsive iframe and synchronizes state via standard browser messages.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="p-6 rounded-2xl bg-[#0e1610] border border-white/10">
+          <div class="text-xs font-mono text-emerald-400 mb-2">01 / INSTANT EMBED</div>
+          <h3 class="text-lg font-bold text-white mb-2">Responsive 3D Viewport</h3>
+          <p class="text-sm text-neutral-400 leading-relaxed">
+            Configure initial route, starting day, drone camera orbit, and elevation chart visibility purely through URL parameters.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-[#0e1610] border border-white/10">
+          <div class="text-xs font-mono text-emerald-400 mb-2">02 / BIDIRECTIONAL SYNC</div>
+          <h3 class="text-lg font-bold text-white mb-2">Two-Way postMessage API</h3>
+          <p class="text-sm text-neutral-400 leading-relaxed">
+            Clicking a day in your itinerary flies the 3D camera to that camp. Clicking a camp inside the 3D mountain highlights the matching day on your page.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-[#0e1610] border border-white/10">
+          <div class="text-xs font-mono text-emerald-400 mb-2">03 / ORIGIN LOCKED</div>
+          <h3 class="text-lg font-bold text-white mb-2">Strict Domain Security</h3>
+          <p class="text-sm text-neutral-400 leading-relaxed">
+            Protected via <code class="font-mono text-xs text-emerald-300">frame-ancestors</code> CSP headers and <code class="font-mono text-xs text-emerald-300">VITE_EMBED_ORIGINS</code> so only authorized tour operators can frame and control the engine.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mt-20 border-t border-white/10 py-8 text-center text-xs text-neutral-500 font-mono">
+    KiliSpatial 3D Engine · Powered by Xenohuru · Kilimanjaro Region, Tanzania
+  </footer>
+</Layout>

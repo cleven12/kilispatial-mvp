@@ -1,0 +1,46 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Interactive 3D Mount Kilimanjaro route simulator and elevation profile SDK for Tanzanian tour operators.'
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TouristTrip",
+        "name": "Mount Kilimanjaro 3D Interactive Climbing Itineraries",
+        "description": "Simulate Machame, Lemosho, and Marangu routes in 3D from gate to Uhuru Peak (5,895m).",
+        "touristType": ["Adventure Trekker", "High-Altitude Mountaineer"],
+        "provider": {
+          "@type": "Organization",
+          "name": "Xenohuru / KiliSpatial",
+          "url": "https://kili.xenohuru.com"
+        }
+      }
+    </script>
+  </head>
+  <body class="min-h-screen bg-[#080c0a] text-[#f0ede6] antialiased selection:bg-emerald-500 selection:text-black">
+    <slot />
+  </body>
+</html>
