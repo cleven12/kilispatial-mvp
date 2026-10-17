@@ -306,11 +306,11 @@
   });
 </script>
 
-<div class="relative w-full h-full min-h-[480px] rounded-2xl overflow-hidden bg-zinc-950 select-none">
+<div class="relative w-full h-full overflow-hidden bg-zinc-950 select-none">
   <div bind:this={mapContainer} class="w-full h-full absolute inset-0"></div>
 
   {#if !isMapReady}
-    <div class="absolute inset-0 flex items-center justify-center bg-zinc-950/80 backdrop-blur-md z-10">
+    <div class="absolute inset-0 flex items-center justify-center bg-zinc-950/80 backdrop-blur-md z-10 pointer-events-none">
       <div class="flex items-center gap-3 px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-300">
         <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
         <span>Loading Mount Kilimanjaro 3D Elevation Mesh...</span>

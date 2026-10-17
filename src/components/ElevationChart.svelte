@@ -144,7 +144,7 @@
       <text x={padX - 4} y={getY(4000) + 3} fill="#52525b" font-size="8" font-family="monospace" text-anchor="end">4k</text>
 
       <line x1={padX} y1={getY(5895)} x2={width - padX} y2={getY(5895)} stroke="#3f3f46" stroke-dasharray="2 2" stroke-width="0.8" />
-      <text x={padX - 4} y={getY(5895) + 3} fill="#f59e0b" font-size="8" font-family="monospace" text-anchor="end">Uhuru</text>
+      <text x={width - padX - 4} y={getY(5895) - 3} fill="#f59e0b" font-size="8" font-family="monospace" text-anchor="end">Uhuru Peak (5,895m)</text>
 
       <!-- Area fill -->
       <path d={areaPath} fill="url(#elevationGrad)" />
