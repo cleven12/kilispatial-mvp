@@ -1,20 +1,20 @@
-# 🗺️ KiliSpatial Roadmap
+# KiliSpatial Roadmap
 
 This document outlines the product vision, planned enhancements, and feature milestones for **KiliSpatial**.
 
 ---
 
-## 🏔️ Product Vision
+## Product Vision
 
-To build the world's most immersive, accurate, and accessible 3D spatial intelligence platform for Mount Kilimanjaro and East African mountain expeditions—transforming how safari & trekking operators showcase itineraries, brief climbers, and manage expeditions.
+To build the world's most immersive, accurate, and accessible 3D spatial intelligence platform for Mount Kilimanjaro and East African mountain expeditions—transforming how safari and trekking operators showcase itineraries, brief climbers, and manage expeditions.
 
 ---
 
-## 📍 Phase 1: v1.0.0 — Production MVP (Current Release)
+## Phase 1: v1.0.0 — Production MVP (Current Release)
 
 - [x] **Native 3D WebGL Engine**: 3D terrain mesh powered by MapLibre GL, AWS Terrarium DEM raster tiles (1.35x elevation exaggeration), and Esri World Satellite imagery.
 - [x] **Dynamic Route Architecture**: High-accuracy GPS traces for primary Kilimanjaro routes (Machame, Lemosho, Marangu).
-- [x] **Point-to-Point Stage Illumination**: Active day trail segment extraction with neon glow highlighting the exact trail path between Departure (Point A) and Camp (Point B).
+- [x] **Point-to-Point Stage Illumination**: Active day trail segment extraction with glowing highlight for the trail path between Departure (Point A) and Camp (Point B).
 - [x] **Summit-Oriented Close-Up Zoom**: High-zoom camera perspective (`zoom: 15.0`, `pitch: 70°`) oriented towards Uhuru Peak (5,895m) for dramatic 3D cliff and ridge visualization.
 - [x] **Uncluttered Studio Workspace**: Hidden-by-default flight controls deck maximizing 3D screen real estate, with a floating action pill and collapsible SVG elevation chart.
 - [x] **Bidirectional postMessage Bridge**: Queue-safe two-way communication between host websites and embedded 3D simulator.
@@ -22,7 +22,7 @@ To build the world's most immersive, accurate, and accessible 3D spatial intelli
 
 ---
 
-## 🚀 Phase 2: v1.1.0 — Free Core Enhancements (Q2 2026)
+## Phase 2: v1.1.0 — Free Core Enhancements (Q2 2026)
 
 - [ ] **Complete 7-Route Coverage**: Add full stage data and waypoint markers for Rongai, Umbwe, Northern Circuit, and Shira Plateau routes.
 - [ ] **GPX / KML Trail Exporter**: Allow climbers and operators to download verified GPS tracks directly to Garmin/Suunto smartwatches.
@@ -32,7 +32,7 @@ To build the world's most immersive, accurate, and accessible 3D spatial intelli
 
 ---
 
-## 💼 Phase 3: Pro & Enterprise Solutions (Commercial Upgrades)
+## Phase 3: Pro & Enterprise Solutions (Commercial Upgrades)
 
 The open-source core is free for community exploration, learning, and independent developers. The following enterprise capabilities are offered as commercial upgrades and custom software implementations for luxury safari and trekking operators:
 
@@ -63,7 +63,7 @@ The open-source core is free for community exploration, learning, and independen
 
 ---
 
-## 📬 Enterprise Inquiries & Custom Development
+## Enterprise Inquiries & Custom Development
 
 To discuss commercial licensing, custom mountain mapping, or custom integrations for your travel company:
 

@@ -1,4 +1,4 @@
-# 🏔️ KiliSpatial — 3D Mount Kilimanjaro B2B Showcase & Embedding Studio
+# KiliSpatial — 3D Mount Kilimanjaro B2B Showcase & Embedding Studio
 
 <p align="center">
   <img src="https://img.shields.io/badge/Astro-5.0+-FF5D01?style=for-the-badge&logo=astro&logoColor=white" alt="Astro 5" />
@@ -6,16 +6,16 @@
   <img src="https://img.shields.io/badge/MapLibre-WebGL%203D-0078FF?style=for-the-badge&logo=maplibre&logoColor=white" alt="MapLibre 3D" />
   <img src="https://img.shields.io/badge/Tailwind-CSS%20v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS v4" />
   <img src="https://img.shields.io/badge/TypeScript-Strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/License-MIT-green.style=for-the-badge" alt="MIT License" />
-  <img src="https://img.shields.io/badge/Made%20in-Tanzania-00A3E0?style=for-the-badge&logo=tanzania&logoColor=white" alt="Tanzania" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License" />
+  <img src="https://img.shields.io/badge/Origin-Tanzania-00A3E0?style=for-the-badge" alt="Tanzania" />
 </p>
 
 <p align="center">
   <a href="https://wa.me/255692654000">
-    <img src="https://img.shields.io/badge/Chat%20on-WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp" />
+    <img src="https://img.shields.io/badge/WhatsApp-Contact%20Direct-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp" />
   </a>
   <a href="mailto:clevengodsontech@gmail.com">
-    <img src="https://img.shields.io/badge/Contact-Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" />
+    <img src="https://img.shields.io/badge/Email-Inquiries-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" />
   </a>
 </p>
 
@@ -29,73 +29,73 @@ A production-ready, extensible **3D Mount Kilimanjaro interactive trekking showc
 
 ---
 
-## ✨ Key Features (Free Open Source Core)
+## Key Features (Free Open Source Core)
 
-- 🏔️ **Native 3D WebGL Terrain Mesh** — Photorealistic 3D topography of Mount Kilimanjaro powered by MapLibre GL, AWS Terrarium DEM raster tiles (`exaggeration: 1.35`), and high-resolution Esri World Satellite imagery.
-- 📍 **Point-to-Point Stage Illumination** — Dynamic GPS trail slicing displaying exact departure waypoints (Point A) and destination camps (Point B), illuminated by vibrant glowing neon emerald ribbons (`#10b981`) and sharp core lines (`#ffffff`).
-- 🔭 **Summit-Oriented Close-Up Zoom** — Deep camera zooms (`zoom: 15.0`, `pitch: 70°`) calculating bearings directly toward Uhuru Peak (5,895m) to visualize steep volcanic ridges, valleys, and cliffs (e.g. Barranco Wall, Lava Tower).
-- 🥾 **Interactive Expedition Itinerary Drawer** — Day-by-day scrollytelling cards detailing individual "FROM" / "TO" waypoints, elevation gains/losses, trekking hours, and ecological zones.
-- 🎛️ **Uncluttered 3D Viewport Workspace** — 100% full-height layout with zero dead vertical space. Heavy flight controls deck is **hidden by default** in favor of a sleek floating glass action pill and collapsible SVG elevation chart.
-- ⚡ **Bidirectional postMessage SDK Bridge** — Resilient, queue-safe two-way communication bridge between host tour operator websites and the embedded 3D viewer.
-- 📋 **B2B Embed Code Generator** — Interactive configurator allowing tour companies to customize parameters (`route`, `day`, `drone`, `chart`) and copy embed snippets (`<iframe>` or JavaScript SDK).
-- 📱 **Responsive & Mobile Optimized** — Smooth touch gestures and camera control across desktop, tablet, and mobile browsers.
+- **Native 3D WebGL Terrain Mesh** — Photorealistic 3D topography of Mount Kilimanjaro powered by MapLibre GL, AWS Terrarium DEM raster tiles (`exaggeration: 1.35`), and high-resolution Esri World Satellite imagery.
+- **Point-to-Point Stage Illumination** — Dynamic GPS trail slicing displaying exact departure waypoints (Point A) and destination camps (Point B), illuminated by vibrant glowing neon emerald ribbons (`#10b981`) and sharp core lines (`#ffffff`).
+- **Summit-Oriented Close-Up Zoom** — Deep camera zooms (`zoom: 15.0`, `pitch: 70°`) calculating bearings directly toward Uhuru Peak (5,895m) to visualize steep volcanic ridges, valleys, and cliffs (e.g. Barranco Wall, Lava Tower).
+- **Interactive Expedition Itinerary Drawer** — Day-by-day scrollytelling cards detailing individual "FROM" / "TO" waypoints, elevation gains/losses, trekking hours, and ecological zones.
+- **Uncluttered 3D Viewport Workspace** — 100% full-height layout with zero dead vertical space. Heavy flight controls deck is **hidden by default** in favor of a sleek floating glass action pill and collapsible SVG elevation chart.
+- **Bidirectional postMessage SDK Bridge** — Resilient, queue-safe two-way communication bridge between host tour operator websites and the embedded 3D viewer.
+- **B2B Embed Code Generator** — Interactive configurator allowing tour companies to customize parameters (`route`, `day`, `drone`, `chart`) and copy embed snippets (`<iframe>` or JavaScript SDK).
+- **Responsive & Mobile Optimized** — Smooth touch gestures and camera control across desktop, tablet, and mobile browsers.
 
 ---
 
-## 🚀 Pro / Enterprise Features (Commercial Upgrades)
+## Pro / Enterprise Features (Commercial Upgrades)
 
 The open-source version is fully functional for developers, independent operators, and regional agencies. 
 
 For high-volume tour operators, luxury safari brands, and national tourism boards, we provide commercial licenses, custom spatial development, and turnkey integrations:
 
-### 🏷️ 1. White-Label Branding & Domain Masking
+### 1. White-Label Branding & Domain Masking
 - Complete removal of KiliSpatial watermarks.
 - Custom corporate typography, brand colors, custom map markers, and branded elevation SVG profiles.
 - Custom domain / reverse proxy embedding (e.g. `expeditions.yourluxurytrek.com`).
 
-### 🛰️ 2. Live Satellite Crew & Client Tracking
+### 2. Live Satellite Crew & Client Tracking
 - Real-time GPS synchronization with **Garmin inReach**, **SPOT Gen4**, or **Zoleo** satellite communicators.
 - Live 3D position marker of the climbing group on the mountain for family members and expedition HQ.
 - Automated daily check-in pings and emergency alert status.
 
-### 🗺️ 3. Multi-Mountain & Safari Wildlife Corridors
+### 3. Multi-Mountain & Safari Wildlife Corridors
 - **Mount Meru (4,562m)**: Complete 3D caldera, ash cone, and Socialist Peak trek simulator.
 - **Ol Doinyo Lengai (2,962m)**: Active stratovolcano ("Mountain of God") steep ascent mapping.
 - **Rwenzori Mountains & Mount Kenya**: Alpine peaks across East and Central Africa.
 - **Serengeti Wildlife Migration Corridors**: 3D spatial tracking of wildebeest herds through the Mara River and Grumeti crossings.
 
-### 🔌 4. CRM & Tour Booking Engine Connectors
+### 4. CRM & Tour Booking Engine Connectors
 - Direct integration with **SafariBookings**, **Wetu**, **Peek Pro**, and **FareHarbor**.
 - Automatic lead capture syncing into **HubSpot**, **Salesforce**, or **Pipedrive** when clients explore specific route itineraries.
 - Embedded quote calculator and checkout flows.
 
-### 🖥️ 5. High-Resolution Interactive Expo Displays (Kiosk Mode)
+### 5. High-Resolution Interactive Expo Displays (Kiosk Mode)
 - Ultra-high-resolution (4K/8K) touch-kiosk presentation mode for international travel trade expos (**ITB Berlin**, **WTM London**, **Indaba Durban**).
 - Automated idle-loop cinematic flythrough demo with physical controller or touch gestures.
 
-> For Pro licensing, custom integrations, or enterprise deployment, please contact us directly (see [Contact](#-contact) section).
+> For Pro licensing, custom integrations, or enterprise deployment, please contact us directly (see [Contact](#contact) section).
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
-- [Quick Start](#-quick-start)
-- [Architecture](#️-architecture)
-- [Configuration](#-configuration)
-- [Usage & Embed SDK](#-usage--embed-sdk)
-- [Project Structure](#-project-structure)
-- [Development Commands](#-development)
-- [Production Deployment](#-production-deployment)
-- [Contributing](#-contributing)
-- [Roadmap](#-roadmap)
-- [Support](#-support-this-project)
-- [Contact](#-contact)
-- [About the Author](#-about-cleven)
-- [License](#-license)
+- [Quick Start](#quick-start)
+- [Architecture](#architecture)
+- [Configuration](#configuration)
+- [Usage & Embed SDK](#usage--embed-sdk)
+- [Project Structure](#project-structure)
+- [Development Commands](#development-commands)
+- [Production Deployment](#production-deployment)
+- [Contributing](#contributing)
+- [Roadmap](#roadmap)
+- [Support](#support-this-project)
+- [Contact](#contact)
+- [About the Author](#about-cleven)
+- [License](#license)
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - **Node.js**: `v22.0.0+`
@@ -128,7 +128,7 @@ Access the production build at **[http://localhost:4321](http://localhost:4321)*
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```mermaid
 flowchart TD
@@ -168,7 +168,7 @@ flowchart TD
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 All configuration lives in `.env` (refer to `.env.example`).
 
@@ -181,7 +181,7 @@ All configuration lives in `.env` (refer to `.env.example`).
 
 ---
 
-## 💬 Usage & Embed SDK
+## Usage & Embed SDK
 
 ### 1. Simple Responsive `<iframe>` Embed
 Add this snippet to your itinerary page or WordPress CMS:
@@ -228,7 +228,7 @@ document.getElementById('btn-lava-tower')?.addEventListener('click', () => {
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 kilispatial-mvp/
@@ -273,7 +273,7 @@ kilispatial-mvp/
 
 ---
 
-## 🛠️ Development
+## Development Commands
 
 ### Handy Makefile Commands
 ```bash
@@ -288,7 +288,7 @@ make docker-up     # Launch containerized service
 
 ---
 
-## 🚢 Production Deployment
+## Production Deployment
 
 ### Vercel / Netlify / Cloudflare Pages
 KiliSpatial is built as a static Astro output (`output: 'static'`) and deploys out of the box to any modern edge hosting platform:
@@ -298,25 +298,25 @@ KiliSpatial is built as a static Astro output (`output: 'static'`) and deploys o
 
 ---
 
-## 🤝 Contributing
-Contributions from the open-source community are warmly welcomed! Please check out [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
+## Contributing
+Contributions from the open-source community are warmly welcomed. Please check out [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 See [ROADMAP.md](ROADMAP.md) for our product roadmap, including upcoming free open-source releases and enterprise commercial solutions.
 
 ---
 
-## 💖 Support This Project
+## Support This Project
 If KiliSpatial saves your agency time, enhances your safari proposals, or serves as a helpful geospatial reference:
-- ⭐ **Star this repository on GitHub**
-- 📢 **Share it with fellow developers and tour operators**
-- 🤝 **Sponsor development via GitHub Sponsors or direct partnership**
+- Star this repository on GitHub
+- Share it with fellow developers and tour operators
+- Sponsor development via GitHub Sponsors or direct partnership
 
 ---
 
-## 📬 Contact
+## Contact
 
 For commercial licensing, custom mountain mapping (Mount Meru, Ol Doinyo Lengai), live satellite tracking integrations, or enterprise inquiries:
 
@@ -329,14 +329,14 @@ For commercial licensing, custom mountain mapping (Mount Meru, Ol Doinyo Lengai)
 
 ---
 
-## 🌍 About Cleven
+## About Cleven
 
 **Cleven** is a full-stack and geospatial software engineer based in Tanzania, specializing in interactive 3D WebGL visualizations, AI-driven automation, and modern web architectures for Africa's travel, tourism, and geospatial sectors.
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the [MIT License](LICENSE) — see the LICENSE file for details.
 
-Made with ❤️ in Tanzania by **Cleven**
+Made in Tanzania by **Cleven**

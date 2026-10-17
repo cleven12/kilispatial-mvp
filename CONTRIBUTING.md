@@ -1,6 +1,6 @@
 # Contributing to KiliSpatial
 
-First off, thank you for considering contributing to KiliSpatial! 🎉
+First off, thank you for considering contributing to KiliSpatial.
 
 KiliSpatial is an open-source, production-grade 3D geospatial showcase and B2B embedding studio for Mount Kilimanjaro expeditions, designed for tour operators, mountain guides, and geospatial developers worldwide.
 

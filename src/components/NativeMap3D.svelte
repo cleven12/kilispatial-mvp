@@ -303,7 +303,7 @@
         el.innerHTML = `
           <div class="flex flex-col items-center">
             <div class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-tight shadow-xl whitespace-nowrap bg-emerald-500 text-zinc-950 border border-emerald-300 ring-2 ring-emerald-400/50 scale-105 transition-transform duration-150">
-              📍 START · ${place.name} · ${place.elevation}m
+              START: ${place.name} (${place.elevation}m)
             </div>
             <div class="relative w-3 h-3 mt-1 flex items-center justify-center">
               <span class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping"></span>
@@ -316,7 +316,7 @@
         el.innerHTML = `
           <div class="flex flex-col items-center">
             <div class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-tight shadow-xl whitespace-nowrap bg-amber-400 text-zinc-950 border border-amber-200 ring-2 ring-amber-300/50 scale-105 transition-transform duration-150">
-              ⛺ CAMP · ${place.name} · ${place.elevation}m
+              CAMP: ${place.name} (${place.elevation}m)
             </div>
             <div class="relative w-3 h-3 mt-1 flex items-center justify-center">
               <span class="absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75 animate-ping"></span>
@@ -329,7 +329,7 @@
         el.innerHTML = `
           <div class="flex flex-col items-center">
             <div class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-tight shadow-xl whitespace-nowrap bg-amber-500 text-zinc-950 ring-2 ring-amber-200">
-              🔥 UHURU PEAK · 5,895m
+              SUMMIT: UHURU PEAK (5,895m)
             </div>
             <div class="relative w-3 h-3 mt-1 flex items-center justify-center">
               <span class="absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75 animate-ping"></span>

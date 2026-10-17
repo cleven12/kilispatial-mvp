@@ -183,7 +183,7 @@
       nativeMapRef?.flyToStage(dayNum);
     }
     bridge?.send({ type: 'focusDay', day: dayNum });
-    lastEventLog = `Stage Day ${dayNum}: ${formatPlace(matched?.fromPlace || '')} ➔ ${formatPlace(matched?.toPlaceId || '')}`;
+    lastEventLog = `Stage Day ${dayNum}: ${formatPlace(matched?.fromPlace || '')} -> ${formatPlace(matched?.toPlaceId || '')}`;
   }
 
   function toggleDrone() {
@@ -415,7 +415,7 @@
                     {item.hikingHours}
                   </span>
                   {#if item.peakAlt}
-                    <span class="text-amber-400">▲ {item.peakAlt}m</span>
+                    <span class="text-amber-400">Peak: {item.peakAlt}m</span>
                   {/if}
                 </div>
 
