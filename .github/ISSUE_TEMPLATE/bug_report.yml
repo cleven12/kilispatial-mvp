@@ -1,0 +1,58 @@
+name: 🐛 Bug Report
+description: Create a report to help us fix a bug or rendering issue in KiliSpatial.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report an issue! Please provide as much detail as possible.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: E.g., Active stage segment line does not illuminate when clicking Day 3 on Safari iOS.
+    validations:
+      required: true
+
+  - type: input
+    id: route-day
+    attributes:
+      label: Route & Day
+      description: Which route and day did this occur on?
+      placeholder: E.g. Machame Route, Day 4 (Barranco to Karanga)
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser & Environment
+      description: What browser and OS are you using?
+      options:
+        - Chrome / Chromium
+        - Firefox
+        - Safari (macOS / iOS)
+        - Microsoft Edge
+        - Other (specify below)
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. Open http://localhost:4321
+        2. Click on '8-Day Lemosho'
+        3. Click 'Zoom' on Day 2
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Browser Console Logs
+      description: Copy and paste any browser console errors or WebGL warnings.
+      render: shell

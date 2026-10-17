@@ -1,9 +1,35 @@
 {
   "name": "kilispatial-mvp",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "description": "Production-ready 3D Mount Kilimanjaro interactive trekking showcase & B2B embed studio for safari & tour operators",
+  "author": "Cleven <clevengodsontech@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cleven12/kilispatial-mvp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cleven12/kilispatial-mvp/issues"
+  },
+  "homepage": "https://github.com/cleven12/kilispatial-mvp#readme",
+  "keywords": [
+    "kilimanjaro",
+    "3d-mapping",
+    "webgl",
+    "maplibre",
+    "astro",
+    "svelte5",
+    "runes",
+    "geospatial",
+    "tanzania",
+    "safari-tourism",
+    "elevation-profile",
+    "scrollytelling",
+    "b2b-saas"
+  ],
   "engines": {
-    "node": ">=22.22.0"
+    "node": ">=22.0.0"
   },
   "scripts": {
     "dev": "astro dev",

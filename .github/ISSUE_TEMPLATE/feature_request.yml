@@ -1,0 +1,32 @@
+name: 💡 Feature Request
+description: Suggest an idea or new capability for KiliSpatial.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We love feedback and ideas! Tell us what you would like to see in KiliSpatial.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: Is your feature request related to a specific challenge or limitation?
+      placeholder: E.g., Tour operators currently need a way to export elevation profiles as images for PDF proposals.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution you'd like to see implemented.
+      placeholder: Add an 'Export Elevation PNG' button inside the elevation profile deck.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Any alternative solutions or features you've considered?

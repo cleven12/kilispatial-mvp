@@ -1,0 +1,44 @@
+name: 💼 Enterprise & Tour Operator Inquiry
+description: Inquire about custom safari mapping, white-label embeds, GPS tracking, or commercial licensing.
+labels: ["enterprise", "commercial"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For commercial licensing, custom mountain/safari corridor mapping, white-labeling, or booking engine integrations, you can also contact us directly at [clevengodsontech@gmail.com](mailto:clevengodsontech@gmail.com) or WhatsApp [+255 692 654 000](https://wa.me/255692654000).
+
+  - type: input
+    id: company
+    attributes:
+      label: Company / Safari Operator Name
+      placeholder: E.g., Serengeti & Kilimanjaro Luxury Expeditions
+    validations:
+      required: true
+
+  - type: input
+    id: contact-email
+    attributes:
+      label: Contact Email / WhatsApp
+      placeholder: info@yourcompany.com or +1 234 567 8900
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: interest-areas
+    attributes:
+      label: Areas of Interest
+      options:
+        - label: White-Label 3D Map Embedding (Remove KiliSpatial branding)
+        - label: Custom Mountain Mapping (Mount Meru, Ol Doinyo Lengai, Mount Kenya)
+        - label: Live Satellite Tracking (Garmin inReach / SPOT integration)
+        - label: Serengeti Wildlife Migration 3D Spatial Corridors
+        - label: CRM / Booking Engine Integration (SafariBookings, Wetu, HubSpot)
+        - label: High-Resolution Offline Kiosk Mode for Tourism Expos (ITB Berlin, WTM)
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Project Requirements & Timeline
+      description: Share your vision, custom requirements, or estimated launch date.
+    validations:
+      required: true
