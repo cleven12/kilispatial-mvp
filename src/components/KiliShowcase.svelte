@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { KiliSpatialBridge, type KiliEvent, type RouteId } from '../lib/kilispatial';
   import { KILIMANJARO_ROUTES } from '../lib/routes-data';
+  import { PLACE_ALIASES } from '../lib/geo';
   import EmbedModal from './EmbedModal.svelte';
   import ElevationChart from './ElevationChart.svelte';
   import NativeMap3D from './NativeMap3D.svelte';
@@ -26,7 +27,9 @@
     ArrowUpRight,
     ChevronDown,
     ChevronUp,
-    SlidersHorizontal
+    SlidersHorizontal,
+    Navigation,
+    Target
   } from 'lucide-svelte';
 
   const DEFAULT_ORIGIN = (import.meta.env.PUBLIC_KILI_ORIGIN as string) || 'https://kili.xenohuru.com';
@@ -45,8 +48,11 @@
   let bridgeReady = $state<boolean>(false);
   let isCspBlocked = $state<boolean>(false);
   let showEmbedModal = $state<boolean>(false);
-  let showElevationProfile = $state<boolean>(true);
-  let lastEventLog = $state<string>('KiliSpatial 3D Studio Engine Active.');
+
+  // Tools deck and elevation profile are hidden by default to maximize 3D screen space
+  let showToolsDeck = $state<boolean>(false);
+  let showElevationProfile = $state<boolean>(false);
+  let lastEventLog = $state<string>('3D Kilimanjaro Terrain & Trail Engine Active.');
 
   let iframeEl = $state<HTMLIFrameElement | null>(null);
   let bridge = $state<KiliSpatialBridge | null>(null);
@@ -57,6 +63,14 @@
   );
 
   let timer: ReturnType<typeof setTimeout>;
+
+  function formatPlace(placeId: string): string {
+    const canonical = PLACE_ALIASES[placeId] || placeId;
+    return canonical
+      .split('-')
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+  }
 
   function initBridge() {
     if (!iframeEl) return;
@@ -71,15 +85,15 @@
         if (KILIMANJARO_ROUTES[event.id]) {
           selectedRouteId = event.id;
         }
-        lastEventLog = `Viewer switched route → ${event.id}`;
+        lastEventLog = `Switched route → ${event.id}`;
       } else if (event.type === 'day') {
         activeDay = event.day;
         const matched = currentPackage.days.find((d) => d.day === event.day);
         if (matched) liveElevation = matched.endAlt;
-        lastEventLog = `Viewer focused Day ${event.day}`;
+        lastEventLog = `Day ${event.day} active`;
       } else if (event.type === 'place') {
         activePlace = event.id;
-        lastEventLog = `Viewer selected place → ${event.id}`;
+        lastEventLog = `Focused place → ${formatPlace(event.id)}`;
       } else if (event.type === 'progress') {
         liveDistanceKm = Number(event.km.toFixed(1));
         liveElevation = Math.round(event.elevation);
@@ -93,7 +107,6 @@
   onMount(() => {
     const unsub = initBridge();
 
-    // Check if remote CSP or network blocked iframe connection
     timer = setTimeout(() => {
       if (!bridgeReady) {
         isCspBlocked = true;
@@ -135,26 +148,48 @@
     liveDistanceKm = distKm;
 
     if (viewMode === 'native') {
-      nativeMapRef?.flyToPlaceId(placeId);
+      nativeMapRef?.flyToStage(dayNum);
     }
     bridge?.send({ type: 'focusDay', day: dayNum });
     bridge?.send({ type: 'focusPlace', id: placeId });
-    lastEventLog = `Day ${dayNum}: ${placeId} (${endAlt}m)`;
+    lastEventLog = `Day ${dayNum}: ${formatPlace(placeId)} (${endAlt}m)`;
   }
 
-  function jumpToPlace(placeId: string) {
+  /**
+   * Zooms closely to a specific waypoint / camp / gate on the 3D mountain
+   */
+  function focusPoint(placeId: string, alt?: number) {
     activePlace = placeId;
+    if (alt) liveElevation = alt;
     if (viewMode === 'native') {
       nativeMapRef?.flyToPlaceId(placeId);
     }
     bridge?.send({ type: 'focusPlace', id: placeId });
-    lastEventLog = `Camera focused on ${placeId}`;
+    lastEventLog = `Zoomed to ${formatPlace(placeId)}${alt ? ` (${alt}m)` : ''}`;
+  }
+
+  /**
+   * Highlights and frames the active stage segment between Point A and Point B
+   */
+  function locateStage(dayNum: number) {
+    activeDay = dayNum;
+    const matched = currentPackage.days.find((d) => d.day === dayNum);
+    if (matched) {
+      liveElevation = matched.endAlt;
+      liveDistanceKm = matched.distanceKm;
+      activePlace = matched.toPlaceId;
+    }
+    if (viewMode === 'native') {
+      nativeMapRef?.flyToStage(dayNum);
+    }
+    bridge?.send({ type: 'focusDay', day: dayNum });
+    lastEventLog = `Stage Day ${dayNum}: ${formatPlace(matched?.fromPlace || '')} ➔ ${formatPlace(matched?.toPlaceId || '')}`;
   }
 
   function toggleDrone() {
     droneActive = !droneActive;
     bridge?.send({ type: 'drone', on: droneActive });
-    lastEventLog = droneActive ? 'Drone orbit active' : 'Drone orbit stopped';
+    lastEventLog = droneActive ? 'Drone 360° orbit active' : 'Drone orbit stopped';
   }
 
   function togglePlayRoute() {
@@ -170,7 +205,7 @@
       nativeMapRef?.resetOverview();
     }
     bridge?.send({ type: 'showRoute' });
-    lastEventLog = 'Reset camera to full overview';
+    lastEventLog = 'Reset view to full mountain overview';
   }
 
   function handleScrub(e: Event) {
@@ -182,7 +217,7 @@
 </script>
 
 <div class="h-screen w-screen flex flex-col overflow-hidden bg-zinc-950 text-zinc-100 select-none">
-  <!-- Top Global Header (Fits on Screen) -->
+  <!-- Top Global Header -->
   <header class="h-14 shrink-0 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur-md px-4 flex items-center justify-between gap-3 z-30">
     <!-- Left: Brand & Route Tabs -->
     <div class="flex items-center gap-3">
@@ -237,22 +272,22 @@
 
     <!-- Right: Quick Jumps & Action CTAs -->
     <div class="flex items-center gap-2">
-      <!-- Quick Waypoint Jumps -->
+      <!-- Quick Waypoint Jumps with Close Zoom -->
       <div class="hidden lg:flex items-center gap-1">
         <button
-          onclick={() => jumpToPlace('lava-tower')}
+          onclick={() => focusPoint('lava-tower', 4630)}
           class="text-[11px] font-mono px-2 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition cursor-pointer"
         >
           Lava Tower (4.6k)
         </button>
         <button
-          onclick={() => jumpToPlace('barranco-camp')}
+          onclick={() => focusPoint('barranco-camp', 3976)}
           class="text-[11px] font-mono px-2 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition cursor-pointer"
         >
           Barranco Wall
         </button>
         <button
-          onclick={() => jumpToPlace('uhuru-peak')}
+          onclick={() => focusPoint('uhuru-peak', 5895)}
           class="text-[11px] font-mono px-2 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 transition cursor-pointer flex items-center gap-1 font-semibold"
         >
           <Flame class="w-3 h-3 text-amber-400" />
@@ -278,7 +313,7 @@
     </div>
   </header>
 
-  <!-- Main Viewport Workspace: Full Height (No empty vertical scrolling) -->
+  <!-- Main Viewport Workspace: Full Height (Fits Viewport Exactly) -->
   <div class="flex-1 flex overflow-hidden relative">
     <!-- Left Panel: Expedition Itinerary Drawer -->
     <div class="w-80 md:w-96 h-full flex flex-col bg-zinc-950 border-r border-zinc-800 shrink-0 z-20">
@@ -306,7 +341,7 @@
         </div>
       </div>
 
-      <!-- Scrollable Day-by-Day List -->
+      <!-- Scrollable Day-by-Day List with Explicit Point A -> Point B Visualization -->
       <div class="flex-1 overflow-y-auto p-2.5 space-y-2">
         {#each currentPackage.days as item (item.day)}
           {@const isSelected = activeDay === item.day}
@@ -321,7 +356,8 @@
                 : 'bg-zinc-900/40 border-zinc-800/70 hover:border-zinc-700 hover:bg-zinc-800/40'
             }`}
           >
-            <div class="flex items-center justify-between gap-1 text-[11px] font-mono mb-1">
+            <!-- Card Header: Day & Zone -->
+            <div class="flex items-center justify-between gap-1 text-[11px] font-mono mb-1.5">
               <div class="flex items-center gap-1.5">
                 <span
                   class={`px-1.5 py-0.5 rounded font-bold ${
@@ -330,31 +366,92 @@
                 >
                   DAY {item.day}
                 </span>
-                <span class="text-zinc-400 text-[10px] truncate max-w-[110px]">{item.zone}</span>
+                <span class="text-zinc-400 text-[10px] truncate max-w-[130px]">{item.zone}</span>
               </div>
 
-              <div class="text-emerald-400">
-                <span class="text-zinc-500">{item.startAlt}m →</span>
-                <strong class="text-white">{item.endAlt}m</strong>
+              <div class="text-emerald-400 font-mono text-[10px]">
+                {#if item.endAlt >= item.startAlt}
+                  <span class="text-emerald-400 font-bold">+{item.endAlt - item.startAlt}m</span>
+                {:else}
+                  <span class="text-amber-400 font-bold">{item.endAlt - item.startAlt}m</span>
+                {/if}
               </div>
             </div>
 
-            <h4 class="text-xs font-bold text-white">{item.title}</h4>
+            <h4 class="text-xs font-bold text-white mb-2">{item.title}</h4>
 
-            <div class="flex items-center gap-3 mt-1.5 text-[11px] text-zinc-400 font-mono">
-              <span class="flex items-center gap-1">
-                <Footprints class="w-3 h-3 text-zinc-500" />
-                {item.distanceKm} km
-              </span>
-              <span class="flex items-center gap-1">
-                <Clock class="w-3 h-3 text-zinc-500" />
-                {item.hikingHours}
-              </span>
-              {#if item.peakAlt}
-                <span class="text-amber-400 flex items-center gap-0.5">
-                  ▲ {item.peakAlt}m
-                </span>
-              {/if}
+            <!-- Explicit Waypoints & Located Trail Stage Part -->
+            <div class="p-2 rounded-lg bg-zinc-950/70 border border-zinc-800/80 space-y-1.5 text-[11px] font-mono">
+              <!-- Point A: Departure -->
+              <div class="flex items-center justify-between gap-1">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+                  <span class="text-zinc-500 text-[10px]">FROM:</span>
+                  <span class="text-white font-medium truncate">{formatPlace(item.fromPlace)}</span>
+                  <span class="text-zinc-400 text-[10px]">({item.startAlt}m)</span>
+                </div>
+                <button
+                  onclick={(e) => {
+                    e.stopPropagation();
+                    focusPoint(item.fromPlace, item.startAlt);
+                  }}
+                  class="px-1.5 py-0.5 rounded bg-zinc-800 hover:bg-emerald-500/20 hover:text-emerald-300 text-zinc-400 font-mono text-[9px] transition cursor-pointer shrink-0 flex items-center gap-0.5"
+                  title="Zoom into Start Point"
+                >
+                  <Target class="w-2.5 h-2.5" />
+                  <span>Zoom</span>
+                </button>
+              </div>
+
+              <!-- Connecting Trail Stage Section -->
+              <div class="flex items-center justify-between pl-1 py-0.5 text-[10px] text-zinc-400 border-l border-dashed border-emerald-500/30 ml-1 pl-2">
+                <div class="flex items-center gap-2">
+                  <span class="flex items-center gap-1 text-zinc-400">
+                    <Footprints class="w-3 h-3 text-zinc-500" />
+                    {item.distanceKm} km
+                  </span>
+                  <span class="flex items-center gap-1 text-zinc-400">
+                    <Clock class="w-3 h-3 text-zinc-500" />
+                    {item.hikingHours}
+                  </span>
+                  {#if item.peakAlt}
+                    <span class="text-amber-400">▲ {item.peakAlt}m</span>
+                  {/if}
+                </div>
+
+                <button
+                  onclick={(e) => {
+                    e.stopPropagation();
+                    locateStage(item.day);
+                  }}
+                  class="px-2 py-0.5 rounded bg-emerald-500/10 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 font-mono text-[9px] transition cursor-pointer flex items-center gap-1 font-semibold"
+                  title="Highlight and fly to this trail stage"
+                >
+                  <Navigation class="w-2.5 h-2.5" />
+                  <span>Locate Stage</span>
+                </button>
+              </div>
+
+              <!-- Point B: Destination Camp -->
+              <div class="flex items-center justify-between gap-1">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+                  <span class="text-zinc-500 text-[10px]">TO:</span>
+                  <span class="text-white font-medium truncate">{formatPlace(item.toPlaceId)}</span>
+                  <span class="text-zinc-400 text-[10px]">({item.endAlt}m)</span>
+                </div>
+                <button
+                  onclick={(e) => {
+                    e.stopPropagation();
+                    focusPoint(item.toPlaceId, item.endAlt);
+                  }}
+                  class="px-1.5 py-0.5 rounded bg-zinc-800 hover:bg-amber-500/20 hover:text-amber-300 text-zinc-400 font-mono text-[9px] transition cursor-pointer shrink-0 flex items-center gap-0.5"
+                  title="Zoom into Destination Camp"
+                >
+                  <Target class="w-2.5 h-2.5" />
+                  <span>Zoom</span>
+                </button>
+              </div>
             </div>
 
             {#if isSelected}
@@ -435,7 +532,7 @@
             onPlaceSelect={(id, alt) => {
               activePlace = id;
               liveElevation = alt;
-              lastEventLog = `Waypoint: ${id} (${alt}m)`;
+              lastEventLog = `Waypoint: ${formatPlace(id)} (${alt}m)`;
             }}
           />
         {:else}
@@ -493,108 +590,193 @@
             style="width: 100%; height: 100%; border: 0;"
           ></iframe>
         {/if}
-      </div>
 
-      <!-- Docked Bottom Flight Control Deck & Elevation Profile (Zero Wasted Space) -->
-      <div class="shrink-0 p-3 bg-zinc-950/90 backdrop-blur-md border-t border-zinc-800 space-y-2 z-20">
-        <!-- Interactive Controls Row -->
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <div class="flex items-center gap-2">
-            <button
-              onclick={togglePlayRoute}
-              class={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition cursor-pointer ${
-                tourPlaying
-                  ? 'bg-amber-500 text-zinc-950 font-semibold shadow-md'
-                  : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-zinc-800'
-              }`}
-            >
-              {#if tourPlaying}
-                <Pause class="w-3.5 h-3.5" />
-                <span>Pause</span>
-              {:else}
-                <Play class="w-3.5 h-3.5 text-emerald-400" />
-                <span>Play Flythrough</span>
-              {/if}
-            </button>
-
-            <button
-              onclick={toggleDrone}
-              class={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition cursor-pointer ${
-                droneActive
-                  ? 'bg-emerald-500 text-zinc-950 font-semibold shadow-md'
-                  : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-zinc-800'
-              }`}
-            >
-              <RotateCw class={`w-3.5 h-3.5 ${droneActive ? 'animate-spin' : 'text-emerald-400'}`} />
-              <span>{droneActive ? 'Stop Orbit' : 'Drone Orbit'}</span>
-            </button>
-
-            <button
-              onclick={resetOverview}
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition cursor-pointer"
-            >
-              <Maximize2 class="w-3.5 h-3.5 text-zinc-400" />
-              <span>Reset Overview</span>
-            </button>
-
-            <button
-              onclick={() => (showElevationProfile = !showElevationProfile)}
-              class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-mono bg-zinc-900 hover:bg-zinc-800 text-zinc-400 border border-zinc-800 cursor-pointer"
-            >
-              <span>Profile</span>
-              {#if showElevationProfile}
-                <ChevronDown class="w-3 h-3" />
-              {:else}
-                <ChevronUp class="w-3 h-3" />
-              {/if}
-            </button>
-          </div>
-
-          <!-- Trail Scrubber & Telemetry Line -->
-          <div class="flex items-center gap-4 flex-1 max-w-md">
-            <div class="flex-1 flex items-center gap-2">
-              <span class="text-[10px] font-mono text-zinc-400 shrink-0">{liveDistanceKm} km</span>
-              <input
-                type="range"
-                min="0"
-                max={currentPackage.totalDistanceKm}
-                step="0.5"
-                value={liveDistanceKm}
-                oninput={handleScrub}
-                class="w-full accent-emerald-500 cursor-pointer h-1.5 bg-zinc-800 rounded-lg appearance-none"
-              />
-              <span class="text-[10px] font-mono text-zinc-400 shrink-0">{currentPackage.totalDistanceKm} km</span>
+        <!-- Sleek Floating Action Dock (Tools hidden by default to maximize 3D screen space) -->
+        {#if !showToolsDeck}
+          <div class="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
+            <!-- Left: Live Telemetry Event Pill -->
+            <div class="px-3 py-1.5 rounded-xl bg-zinc-950/85 backdrop-blur-md border border-zinc-800/80 text-[11px] font-mono text-zinc-300 flex items-center gap-2 shadow-xl pointer-events-auto">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="truncate max-w-[200px] sm:max-w-xs">{lastEventLog}</span>
             </div>
 
-            <div class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-[10px] font-mono text-zinc-400 flex items-center gap-1.5 shrink-0 max-w-[200px] truncate">
-              <Terminal class="w-3 h-3 text-emerald-400 shrink-0" />
-              <span class="truncate">{lastEventLog}</span>
-            </div>
-          </div>
-        </div>
+            <!-- Right: Minimal Flight Controls & Tools Toggle Pill -->
+            <div class="flex items-center gap-1.5 p-1 rounded-2xl bg-zinc-950/90 backdrop-blur-md border border-zinc-800 shadow-2xl pointer-events-auto">
+              <button
+                onclick={togglePlayRoute}
+                class={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition cursor-pointer flex items-center gap-1.5 ${
+                  tourPlaying
+                    ? 'bg-amber-500 text-zinc-950 font-semibold shadow-md'
+                    : 'text-zinc-200 hover:bg-zinc-800/80'
+                }`}
+                title="Play 3D Flythrough"
+              >
+                {#if tourPlaying}
+                  <Pause class="w-3.5 h-3.5" />
+                  <span class="hidden sm:inline">Pause</span>
+                {:else}
+                  <Play class="w-3.5 h-3.5 text-emerald-400" />
+                  <span class="hidden sm:inline">Play</span>
+                {/if}
+              </button>
 
-        <!-- Collapsible Elevation Profile SVG Chart -->
-        {#if showElevationProfile}
-          <div class="pt-1">
-            <ElevationChart
-              days={currentPackage.days}
-              activeDay={activeDay}
-              liveDistanceKm={liveDistanceKm}
-              onSelectDay={(dayNum) => {
-                const item = currentPackage.days.find((d) => d.day === dayNum);
-                if (item) {
-                  selectDayStep(item.day, item.toPlaceId, item.endAlt, item.distanceKm);
-                }
-              }}
-              onScrub={(km) => {
-                liveDistanceKm = km;
-                bridge?.send({ type: 'scrub', km });
-                lastEventLog = `Scrubbed to ${km} km`;
-              }}
-            />
+              <button
+                onclick={toggleDrone}
+                class={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition cursor-pointer flex items-center gap-1.5 ${
+                  droneActive
+                    ? 'bg-emerald-500 text-zinc-950 font-semibold shadow-md'
+                    : 'text-zinc-200 hover:bg-zinc-800/80'
+                }`}
+                title="Drone 360° Orbit"
+              >
+                <RotateCw class={`w-3.5 h-3.5 ${droneActive ? 'animate-spin' : 'text-emerald-400'}`} />
+                <span class="hidden sm:inline">Orbit</span>
+              </button>
+
+              <button
+                onclick={resetOverview}
+                class="px-2.5 py-1.5 rounded-xl text-xs font-mono text-zinc-300 hover:bg-zinc-800/80 transition cursor-pointer flex items-center gap-1"
+                title="Reset Mountain Overview"
+              >
+                <Maximize2 class="w-3.5 h-3.5 text-zinc-400" />
+                <span class="hidden md:inline">Overview</span>
+              </button>
+
+              <div class="h-4 w-px bg-zinc-800 mx-0.5"></div>
+
+              <!-- Button to open Elevation Profile & Tools Deck -->
+              <button
+                onclick={() => {
+                  showToolsDeck = true;
+                  showElevationProfile = true;
+                }}
+                class="px-3 py-1.5 rounded-xl text-xs font-mono font-medium bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 transition cursor-pointer flex items-center gap-1.5"
+                title="Expand Tools & Elevation Profile"
+              >
+                <SlidersHorizontal class="w-3.5 h-3.5 text-emerald-400" />
+                <span>Tools & Profile</span>
+                <ChevronUp class="w-3 h-3 text-emerald-400" />
+              </button>
+            </div>
           </div>
         {/if}
       </div>
+
+      <!-- Docked Bottom Flight Control Deck & Elevation Profile (Opens when expanded) -->
+      {#if showToolsDeck}
+        <div class="shrink-0 p-3 bg-zinc-950/95 backdrop-blur-md border-t border-zinc-800 space-y-2 z-20">
+          <!-- Interactive Controls Row -->
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+              <button
+                onclick={togglePlayRoute}
+                class={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition cursor-pointer ${
+                  tourPlaying
+                    ? 'bg-amber-500 text-zinc-950 font-semibold shadow-md'
+                    : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-zinc-800'
+                }`}
+              >
+                {#if tourPlaying}
+                  <Pause class="w-3.5 h-3.5" />
+                  <span>Pause</span>
+                {:else}
+                  <Play class="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Play Flythrough</span>
+                {/if}
+              </button>
+
+              <button
+                onclick={toggleDrone}
+                class={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition cursor-pointer ${
+                  droneActive
+                    ? 'bg-emerald-500 text-zinc-950 font-semibold shadow-md'
+                    : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-zinc-800'
+                }`}
+              >
+                <RotateCw class={`w-3.5 h-3.5 ${droneActive ? 'animate-spin' : 'text-emerald-400'}`} />
+                <span>{droneActive ? 'Stop Orbit' : 'Drone Orbit'}</span>
+              </button>
+
+              <button
+                onclick={resetOverview}
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition cursor-pointer"
+              >
+                <Maximize2 class="w-3.5 h-3.5 text-zinc-400" />
+                <span>Reset Overview</span>
+              </button>
+
+              <button
+                onclick={() => (showElevationProfile = !showElevationProfile)}
+                class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-mono bg-zinc-900 hover:bg-zinc-800 text-zinc-400 border border-zinc-800 cursor-pointer"
+              >
+                <span>Profile Chart</span>
+                {#if showElevationProfile}
+                  <ChevronDown class="w-3 h-3" />
+                {:else}
+                  <ChevronUp class="w-3 h-3" />
+                {/if}
+              </button>
+            </div>
+
+            <!-- Trail Scrubber & Telemetry Line -->
+            <div class="flex items-center gap-4 flex-1 max-w-md">
+              <div class="flex-1 flex items-center gap-2">
+                <span class="text-[10px] font-mono text-zinc-400 shrink-0">{liveDistanceKm} km</span>
+                <input
+                  type="range"
+                  min="0"
+                  max={currentPackage.totalDistanceKm}
+                  step="0.5"
+                  value={liveDistanceKm}
+                  oninput={handleScrub}
+                  class="w-full accent-emerald-500 cursor-pointer h-1.5 bg-zinc-800 rounded-lg appearance-none"
+                />
+                <span class="text-[10px] font-mono text-zinc-400 shrink-0">{currentPackage.totalDistanceKm} km</span>
+              </div>
+
+              <div class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-[10px] font-mono text-zinc-400 flex items-center gap-1.5 shrink-0 max-w-[160px] truncate">
+                <Terminal class="w-3 h-3 text-emerald-400 shrink-0" />
+                <span class="truncate">{lastEventLog}</span>
+              </div>
+
+              <!-- Collapse / Hide Tools Button -->
+              <button
+                onclick={() => {
+                  showToolsDeck = false;
+                  showElevationProfile = false;
+                }}
+                class="px-2 py-1 rounded-lg text-[11px] font-mono bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 transition cursor-pointer flex items-center gap-1 shrink-0"
+                title="Hide Bottom Tools"
+              >
+                <span>Hide Tools</span>
+                <ChevronDown class="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+
+          <!-- Collapsible Elevation Profile SVG Chart -->
+          {#if showElevationProfile}
+            <div class="pt-1">
+              <ElevationChart
+                days={currentPackage.days}
+                activeDay={activeDay}
+                liveDistanceKm={liveDistanceKm}
+                onSelectDay={(dayNum) => {
+                  const item = currentPackage.days.find((d) => d.day === dayNum);
+                  if (item) {
+                    selectDayStep(item.day, item.toPlaceId, item.endAlt, item.distanceKm);
+                  }
+                }}
+                onScrub={(km) => {
+                  liveDistanceKm = km;
+                  bridge?.send({ type: 'scrub', km });
+                  lastEventLog = `Scrubbed to ${km} km`;
+                }}
+              />
+            </div>
+          {/if}
+        </div>
+      {/if}
     </div>
   </div>
 </div>
