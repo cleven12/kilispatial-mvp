@@ -3,6 +3,28 @@
   import { KiliSpatialBridge, type KiliEvent, type RouteId } from '../lib/kilispatial';
   import { KILIMANJARO_ROUTES } from '../lib/routes-data';
   import EmbedModal from './EmbedModal.svelte';
+  import ElevationChart from './ElevationChart.svelte';
+  import {
+    Compass,
+    Footprints,
+    Clock,
+    Mountain,
+    ShieldCheck,
+    Tent,
+    Play,
+    Pause,
+    RotateCw,
+    Maximize2,
+    Code2,
+    CheckCircle2,
+    Sparkles,
+    Terminal,
+    AlertTriangle,
+    RefreshCw,
+    MapPin,
+    Flame,
+    ArrowUpRight
+  } from 'lucide-svelte';
 
   const DEFAULT_ORIGIN = (import.meta.env.PUBLIC_KILI_ORIGIN as string) || 'https://kili.xenohuru.com';
 
@@ -140,23 +162,25 @@
 </script>
 
 <!-- Top Route Switcher & B2B Action Bar -->
-<div class="mb-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b border-white/10">
-  <div class="flex flex-wrap items-center gap-2">
+<div class="mb-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b border-zinc-800">
+  <div class="flex flex-wrap items-center gap-2 p-1 rounded-2xl bg-zinc-950/80 border border-zinc-800/80">
     {#each Object.values(KILIMANJARO_ROUTES) as routeItem}
+      {@const isSelected = selectedRouteId === routeItem.id}
       <button
         onclick={() => switchRoute(routeItem.id)}
-        class={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer ${
-          selectedRouteId === routeItem.id
-            ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20'
-            : 'bg-[#0e1610] text-neutral-300 border border-white/10 hover:border-emerald-500/40'
+        class={`px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150 flex items-center gap-2.5 cursor-pointer ${
+          isSelected
+            ? 'bg-zinc-800 text-white shadow-md border border-zinc-700/60'
+            : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
         }`}
       >
-        <span>{routeItem.name}</span>
+        <MapPin class={`w-3.5 h-3.5 ${isSelected ? 'text-emerald-400' : 'text-zinc-500'}`} />
+        <span class="font-semibold">{routeItem.name}</span>
         <span
-          class={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider ${
-            selectedRouteId === routeItem.id
-              ? 'bg-black/20 text-black font-bold'
-              : 'bg-white/5 text-emerald-400'
+          class={`text-[10px] px-2 py-0.5 rounded-full font-mono font-medium ${
+            isSelected
+              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+              : 'bg-zinc-900 text-zinc-400'
           }`}
         >
           {routeItem.badge}
@@ -168,38 +192,66 @@
   <div class="flex items-center gap-3">
     <button
       onclick={() => (showEmbedModal = true)}
-      class="px-4 py-2.5 rounded-xl text-xs font-mono font-semibold bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 transition flex items-center gap-2 cursor-pointer"
+      class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-mono font-semibold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition shadow-sm cursor-pointer"
     >
-      <span>&lt;/&gt; Embed 3D Map on Your Tour Site</span>
+      <Code2 class="w-3.5 h-3.5" />
+      <span>&lt;/&gt; Embed 3D Map on Your Site</span>
     </button>
   </div>
 </div>
 
 <!-- Package Hero Summary Strip -->
 <div class="mb-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-  <div class="p-3.5 rounded-xl bg-[#0e1610]/90 border border-white/10">
-    <div class="text-[11px] font-mono uppercase text-neutral-400">Route Nickname</div>
-    <div class="text-sm font-bold text-white mt-0.5">{currentPackage.nickname}</div>
+  <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col justify-between">
+    <div class="flex items-center gap-2 text-zinc-400 text-xs font-mono">
+      <Compass class="w-3.5 h-3.5 text-zinc-400" />
+      <span>ROUTE NICKNAME</span>
+    </div>
+    <div class="text-sm font-bold text-white mt-2">{currentPackage.nickname}</div>
   </div>
-  <div class="p-3.5 rounded-xl bg-[#0e1610]/90 border border-white/10">
-    <div class="text-[11px] font-mono uppercase text-neutral-400">Duration / Distance</div>
-    <div class="text-sm font-bold text-white mt-0.5">{currentPackage.durationDays} Days · {currentPackage.totalDistanceKm} km</div>
+
+  <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col justify-between">
+    <div class="flex items-center gap-2 text-zinc-400 text-xs font-mono">
+      <Footprints class="w-3.5 h-3.5 text-zinc-400" />
+      <span>DURATION / TRAIL</span>
+    </div>
+    <div class="text-sm font-bold text-white mt-2 font-mono">
+      {currentPackage.durationDays} Days · {currentPackage.totalDistanceKm} km
+    </div>
   </div>
-  <div class="p-3.5 rounded-xl bg-[#0e1610]/90 border border-white/10">
-    <div class="text-[11px] font-mono uppercase text-neutral-400">Summit Success</div>
-    <div class="text-sm font-bold text-emerald-400 mt-0.5">{currentPackage.successRate} Verified</div>
+
+  <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col justify-between">
+    <div class="flex items-center gap-2 text-zinc-400 text-xs font-mono">
+      <ShieldCheck class="w-3.5 h-3.5 text-emerald-400" />
+      <span>SUMMIT SUCCESS</span>
+    </div>
+    <div class="text-sm font-bold text-emerald-400 mt-2 font-mono">{currentPackage.successRate} Verified</div>
   </div>
-  <div class="p-3.5 rounded-xl bg-[#0e1610]/90 border border-white/10">
-    <div class="text-[11px] font-mono uppercase text-neutral-400">Accommodation</div>
-    <div class="text-sm font-bold text-white mt-0.5">{currentPackage.accommodation}</div>
+
+  <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col justify-between">
+    <div class="flex items-center gap-2 text-zinc-400 text-xs font-mono">
+      <Tent class="w-3.5 h-3.5 text-zinc-400" />
+      <span>ACCOMMODATION</span>
+    </div>
+    <div class="text-sm font-bold text-white mt-2">{currentPackage.accommodation}</div>
   </div>
-  <div class="p-3.5 rounded-xl bg-[#0e1610]/90 border border-white/10">
-    <div class="text-[11px] font-mono uppercase text-neutral-400">Active Camp Elevation</div>
-    <div class="text-sm font-bold text-amber-400 font-mono mt-0.5">{liveElevation.toLocaleString()} m</div>
+
+  <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col justify-between">
+    <div class="flex items-center gap-2 text-zinc-400 text-xs font-mono">
+      <Mountain class="w-3.5 h-3.5 text-amber-400" />
+      <span>ACTIVE ALTITUDE</span>
+    </div>
+    <div class="text-sm font-bold text-amber-400 font-mono mt-2">{liveElevation.toLocaleString()} m</div>
   </div>
-  <div class="p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 flex flex-col justify-between">
-    <div class="text-[11px] font-mono uppercase text-emerald-300">Package Starting At</div>
-    <div class="text-lg font-extrabold text-white">${currentPackage.startingPriceUsd.toLocaleString()} <span class="text-xs font-normal text-neutral-400">/pp</span></div>
+
+  <div class="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/30 flex flex-col justify-between">
+    <div class="text-[11px] font-mono text-emerald-400 flex items-center gap-1.5">
+      <Sparkles class="w-3.5 h-3.5" />
+      <span>PACKAGE STARTING AT</span>
+    </div>
+    <div class="text-lg font-bold text-white mt-1">
+      ${currentPackage.startingPriceUsd.toLocaleString()} <span class="text-xs font-normal text-zinc-400">/pp</span>
+    </div>
   </div>
 </div>
 
@@ -207,12 +259,18 @@
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
   <!-- LEFT COLUMN: Interactive Day-by-Day Operator Itinerary -->
   <div class="lg:col-span-5 space-y-3">
-    <div class="flex items-center justify-between mb-2">
-      <h2 class="text-lg font-bold tracking-tight">Day-by-Day Expedition Itinerary</h2>
-      <span class="text-xs font-mono text-emerald-400">Click any day to fly 3D camera</span>
+    <div class="flex items-center justify-between pb-2">
+      <div>
+        <h2 class="text-base font-bold text-white tracking-tight">Expedition Waypoints</h2>
+        <p class="text-xs text-zinc-400 mt-0.5">Click any stage to fly the 3D camera</p>
+      </div>
+      <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+        {currentPackage.days.length} Stages
+      </span>
     </div>
 
-    <div class="space-y-3 max-h-[680px] overflow-y-auto pr-1.5">
+    <!-- Timeline List with Connected Vertical Border -->
+    <div class="space-y-3 max-h-[720px] overflow-y-auto pr-2 relative">
       {#each currentPackage.days as item (item.day)}
         {@const isSelected = activeDay === item.day}
         <div
@@ -220,49 +278,61 @@
           tabindex="0"
           onclick={() => selectDayStep(item.day, item.toPlaceId, item.endAlt, item.distanceKm)}
           onkeydown={(e) => e.key === 'Enter' && selectDayStep(item.day, item.toPlaceId, item.endAlt, item.distanceKm)}
-          class={`w-full text-left p-4 rounded-2xl border transition-all duration-200 cursor-pointer ${
+          class={`w-full text-left p-4 rounded-xl border transition-all duration-200 cursor-pointer ${
             isSelected
-              ? 'bg-[#122117] border-emerald-500/60 shadow-lg shadow-emerald-950/50'
-              : 'bg-[#0e1610]/70 border-white/10 hover:border-white/25 hover:bg-[#0e1610]'
+              ? 'bg-zinc-800/90 border-emerald-500/60 shadow-lg shadow-black/40 ring-1 ring-emerald-500/30'
+              : 'bg-zinc-900/60 border-zinc-800/80 hover:border-zinc-700 hover:bg-zinc-800/40'
           }`}
         >
           <div class="flex items-center justify-between gap-2 mb-1.5">
             <div class="flex items-center gap-2">
               <span
-                class={`text-xs font-mono font-bold px-2.5 py-0.5 rounded-md ${
-                  isSelected ? 'bg-emerald-500 text-black' : 'bg-white/10 text-neutral-300'
+                class={`text-xs font-mono font-bold px-2 py-0.5 rounded-md ${
+                  isSelected ? 'bg-emerald-500 text-zinc-950' : 'bg-zinc-800 text-zinc-300'
                 }`}
               >
                 DAY {item.day}
               </span>
-              <span class="text-xs font-mono text-neutral-400">{item.zone}</span>
+              <span class="text-xs font-mono text-zinc-400">{item.zone}</span>
             </div>
 
-            <div class="text-xs font-mono text-emerald-400">
-              {item.startAlt}m → <strong>{item.endAlt}m</strong>
+            <div class="text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span>{item.startAlt}m</span>
+              <span class="text-zinc-500">→</span>
+              <strong class="text-white font-semibold">{item.endAlt}m</strong>
             </div>
           </div>
 
-          <h3 class="text-base font-bold text-white">{item.title}</h3>
+          <h3 class="text-sm font-bold text-white mt-1">{item.title}</h3>
 
-          <div class="flex flex-wrap items-center gap-3 mt-2 text-xs text-neutral-400 font-mono">
-            <span>🥾 {item.distanceKm} km</span>
-            <span>⏱ {item.hikingHours}</span>
+          <div class="flex flex-wrap items-center gap-3 mt-2 text-xs text-zinc-400 font-mono">
+            <span class="flex items-center gap-1.5">
+              <Footprints class="w-3.5 h-3.5 text-zinc-500" />
+              {item.distanceKm} km
+            </span>
+            <span class="flex items-center gap-1.5">
+              <Clock class="w-3.5 h-3.5 text-zinc-500" />
+              {item.hikingHours}
+            </span>
             {#if item.peakAlt}
-              <span class="text-amber-400">▲ Max Alt: {item.peakAlt}m</span>
+              <span class="flex items-center gap-1.5 text-amber-400">
+                <Mountain class="w-3.5 h-3.5" />
+                Max Alt: {item.peakAlt}m
+              </span>
             {/if}
           </div>
 
           {#if isSelected}
-            <p class="mt-3 text-sm text-neutral-300 leading-relaxed border-t border-white/10 pt-3">
-              {item.summary}
-            </p>
-            <div class="mt-3 flex flex-wrap gap-1.5">
-              {#each item.highlights as chip}
-                <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-300">
-                  ✓ {chip}
-                </span>
-              {/each}
+            <div class="mt-3 text-xs text-zinc-300 leading-relaxed border-t border-zinc-700/60 pt-3">
+              <p>{item.summary}</p>
+              <div class="mt-3 flex flex-wrap gap-1.5">
+                {#each item.highlights as chip}
+                  <span class="inline-flex items-center gap-1 text-[11px] px-2.5 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-300">
+                    <CheckCircle2 class="w-3 h-3 text-emerald-400" />
+                    {chip}
+                  </span>
+                {/each}
+              </div>
             </div>
           {/if}
         </div>
@@ -273,36 +343,37 @@
   <!-- RIGHT COLUMN: Sticky Embedded KiliSpatial 3D Engine & Telemetry Control Deck -->
   <div class="lg:col-span-7 lg:sticky lg:top-6 space-y-4">
     <!-- 3D Viewer Frame Container -->
-    <div class="relative rounded-2xl overflow-hidden border border-white/15 bg-black shadow-2xl">
+    <div class="relative rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-950 shadow-2xl">
       <!-- Top Floating HUD Bar -->
       <div class="absolute top-3 left-3 right-3 z-10 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
-        <div class="px-3 py-1.5 rounded-xl bg-black/75 backdrop-blur-md border border-white/15 flex items-center gap-2.5">
+        <div class="px-3 py-1.5 rounded-xl bg-zinc-950/80 backdrop-blur-md border border-zinc-800/80 flex items-center gap-2.5 shadow-lg">
           <span class="w-2 h-2 rounded-full {bridgeReady ? 'bg-emerald-400' : 'bg-amber-400'} animate-pulse"></span>
-          <span class="text-xs font-mono text-white">
+          <span class="text-xs font-mono text-zinc-200">
             DAY {activeDay}: <strong class="text-emerald-400">{currentDayObj.title}</strong>
           </span>
         </div>
 
-        <div class="px-3 py-1.5 rounded-xl bg-black/75 backdrop-blur-md border border-white/15 text-xs font-mono text-amber-300">
-          Elevation: <strong>{liveElevation}m</strong> ({Math.round(liveElevation * 3.28084).toLocaleString()} ft)
+        <div class="px-3 py-1.5 rounded-xl bg-zinc-950/80 backdrop-blur-md border border-zinc-800/80 text-xs font-mono text-amber-300 shadow-lg flex items-center gap-1.5">
+          <Mountain class="w-3.5 h-3.5" />
+          <span>Elevation: <strong>{liveElevation}m</strong> ({Math.round(liveElevation * 3.28084).toLocaleString()} ft)</span>
         </div>
       </div>
 
       {#if !bridgeReady && isCspBlocked}
-        <div class="absolute inset-0 z-20 flex items-center justify-center p-6 bg-black/85 backdrop-blur-md text-left">
-          <div class="max-w-lg w-full bg-[#111c14] border border-amber-500/40 rounded-2xl p-5 shadow-2xl space-y-3.5">
+        <div class="absolute inset-0 z-20 flex items-center justify-center p-6 bg-zinc-950/90 backdrop-blur-md text-left">
+          <div class="max-w-lg w-full bg-zinc-900 border border-amber-500/40 rounded-2xl p-5 shadow-2xl space-y-3.5 text-zinc-100">
             <div class="flex items-start gap-3">
-              <span class="text-2xl">⚠️</span>
+              <AlertTriangle class="w-6 h-6 text-amber-400 shrink-0 mt-0.5" />
               <div>
                 <h4 class="text-sm font-bold text-amber-300">Remote Engine Refused Connection (CSP Block)</h4>
-                <p class="text-xs text-neutral-300 mt-1 leading-relaxed">
+                <p class="text-xs text-zinc-400 mt-1 leading-relaxed">
                   Your browser blocked the iframe because <code class="text-emerald-400 font-mono">http://localhost:4321</code> is not yet whitelisted on the remote <code class="text-emerald-400 font-mono">{deployOrigin}</code> server.
                 </p>
               </div>
             </div>
 
-            <div class="bg-black/60 rounded-xl p-3 border border-white/10 font-mono text-[11px] text-neutral-300 space-y-2">
-              <div class="text-neutral-400 font-sans font-semibold">Whitelist localhost in your engine repo:</div>
+            <div class="bg-zinc-950 rounded-xl p-3 border border-zinc-800 font-mono text-[11px] text-zinc-300 space-y-2">
+              <div class="text-zinc-400 font-sans font-semibold">Whitelist localhost in your engine repo:</div>
               <div>
                 <span class="text-amber-400">1. static/_headers:</span>
                 <pre class="text-emerald-300 text-[10px] mt-0.5 overflow-x-auto whitespace-pre-wrap">Content-Security-Policy: frame-ancestors 'self' http://localhost:4321 https://*.vercel.app https://xenohuru.com</pre>
@@ -318,12 +389,13 @@
                 type="text"
                 placeholder="Custom Engine URL (e.g. http://localhost:5173)"
                 bind:value={deployOrigin}
-                class="flex-1 bg-black/70 border border-white/20 rounded-lg px-3 py-1.5 text-xs text-white font-mono"
+                class="flex-1 bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-white font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500"
               />
               <button
                 onclick={() => setOrigin(deployOrigin)}
-                class="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-xs transition cursor-pointer"
+                class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-semibold text-xs transition cursor-pointer"
               >
+                <RefreshCw class="w-3.5 h-3.5" />
                 Reconnect
               </button>
             </div>
@@ -338,74 +410,104 @@
         title="Mount Kilimanjaro 3D Route Simulator"
         loading="lazy"
         allow="fullscreen"
-        style="width: 100%; aspect-ratio: 16/10; min-height: 460px; border: 0;"
+        style="width: 100%; aspect-ratio: 16/10; min-height: 480px; border: 0;"
       ></iframe>
     </div>
 
+    <!-- Interactive Elevation Profile SVG Chart -->
+    <ElevationChart
+      days={currentPackage.days}
+      activeDay={activeDay}
+      liveDistanceKm={liveDistanceKm}
+      onSelectDay={(dayNum) => {
+        const item = currentPackage.days.find((d) => d.day === dayNum);
+        if (item) {
+          selectDayStep(item.day, item.toPlaceId, item.endAlt, item.distanceKm);
+        }
+      }}
+      onScrub={(km) => {
+        liveDistanceKm = km;
+        bridge?.send({ type: 'scrub', km });
+        lastEventLog = `Host sent: scrub(${km} km)`;
+      }}
+    />
+
     <!-- Bidirectional postMessage Control Deck -->
-    <div class="p-4 rounded-2xl bg-[#0e1610] border border-white/10 space-y-4">
+    <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div class="flex flex-wrap items-center gap-2">
           <button
             onclick={togglePlayRoute}
-            class={`px-3.5 py-2 rounded-xl text-xs font-mono font-semibold transition cursor-pointer ${
+            class={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-mono font-medium transition cursor-pointer ${
               tourPlaying
-                ? 'bg-amber-500 text-black'
-                : 'bg-white/10 hover:bg-white/15 text-white border border-white/10'
+                ? 'bg-amber-500 text-zinc-950 font-semibold shadow-md'
+                : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700/60'
             }`}
           >
-            {tourPlaying ? '⏸ Pause 3D Flythrough' : '▶ Play Route Flythrough'}
+            {#if tourPlaying}
+              <Pause class="w-3.5 h-3.5" />
+              <span>Pause Flythrough</span>
+            {:else}
+              <Play class="w-3.5 h-3.5 text-emerald-400" />
+              <span>Play Flythrough</span>
+            {/if}
           </button>
 
           <button
             onclick={toggleDrone}
-            class={`px-3.5 py-2 rounded-xl text-xs font-mono font-semibold transition cursor-pointer ${
+            class={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-mono font-medium transition cursor-pointer ${
               droneActive
-                ? 'bg-emerald-500 text-black'
-                : 'bg-white/10 hover:bg-white/15 text-white border border-white/10'
+                ? 'bg-emerald-500 text-zinc-950 font-semibold shadow-md'
+                : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700/60'
             }`}
           >
-            🚁 {droneActive ? 'Stop Drone Orbit' : 'Orbit Drone Camera'}
+            <RotateCw class={`w-3.5 h-3.5 ${droneActive ? 'animate-spin' : 'text-emerald-400'}`} />
+            <span>{droneActive ? 'Stop Orbit' : 'Orbit Camera'}</span>
           </button>
 
           <button
             onclick={resetOverview}
-            class="px-3.5 py-2 rounded-xl text-xs font-mono bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/10 transition cursor-pointer"
+            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-mono bg-zinc-800/70 hover:bg-zinc-700 text-zinc-300 border border-zinc-700/60 transition cursor-pointer"
           >
-            🗺️ Full Route Overview
+            <Maximize2 class="w-3.5 h-3.5 text-zinc-400" />
+            <span>Overview</span>
           </button>
         </div>
 
         <!-- Quick Checkpoint Jump -->
         <div class="flex items-center gap-1.5">
-          <span class="text-[11px] font-mono text-neutral-400">Quick Jump:</span>
+          <span class="text-[11px] font-mono text-zinc-400">Quick Jump:</span>
           <button
             onclick={() => bridge?.send({ type: 'focusPlace', id: 'lava-tower' })}
-            class="text-xs font-mono px-2.5 py-1 rounded-lg bg-white/5 hover:bg-emerald-500/20 text-emerald-300 border border-white/10 cursor-pointer"
+            class="text-xs font-mono px-2.5 py-1 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700/60 transition cursor-pointer"
           >
-            Lava Tower
+            Lava Tower (4,630m)
           </button>
           <button
             onclick={() => bridge?.send({ type: 'focusPlace', id: 'barranco-camp' })}
-            class="text-xs font-mono px-2.5 py-1 rounded-lg bg-white/5 hover:bg-emerald-500/20 text-emerald-300 border border-white/10 cursor-pointer"
+            class="text-xs font-mono px-2.5 py-1 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700/60 transition cursor-pointer"
           >
-            Barranco
+            Barranco Wall
           </button>
           <button
             onclick={() => bridge?.send({ type: 'focusPlace', id: 'uhuru-peak' })}
-            class="text-xs font-mono px-2.5 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 cursor-pointer"
+            class="text-xs font-mono px-2.5 py-1 rounded-md bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 transition cursor-pointer font-semibold flex items-center gap-1"
           >
+            <Flame class="w-3 h-3 text-amber-400" />
             Uhuru Peak (5,895m)
           </button>
         </div>
       </div>
 
-      <!-- Interactive Distance Scrubber (tests `scrub` command) -->
-      <div class="pt-3 border-t border-white/10 flex flex-col sm:flex-row sm:items-center gap-4">
+      <!-- Interactive Distance Scrubber -->
+      <div class="pt-3 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-center gap-4">
         <div class="flex-1">
-          <div class="flex justify-between text-xs font-mono text-neutral-400 mb-1">
-            <span>Scrub Trail Distance (`scrub` API)</span>
-            <span class="text-emerald-400">{liveDistanceKm} km / {currentPackage.totalDistanceKm} km</span>
+          <div class="flex justify-between text-xs font-mono text-zinc-400 mb-1.5">
+            <span class="flex items-center gap-1.5">
+              <Footprints class="w-3.5 h-3.5 text-emerald-400" />
+              Scrub Trail Distance (`scrub` API)
+            </span>
+            <span class="text-emerald-400 font-semibold">{liveDistanceKm} km / {currentPackage.totalDistanceKm} km</span>
           </div>
           <input
             type="range"
@@ -414,28 +516,33 @@
             step="0.5"
             value={liveDistanceKm}
             oninput={handleScrub}
-            class="w-full accent-emerald-500 cursor-pointer"
+            class="w-full accent-emerald-500 cursor-pointer h-1.5 bg-zinc-800 rounded-lg appearance-none"
           />
         </div>
 
         <!-- Live postMessage Telemetry Status -->
-        <div class="sm:w-64 px-3 py-2 rounded-xl bg-black/60 border border-white/10 font-mono text-[11px] text-neutral-400 truncate">
-          <span class="text-emerald-400">⚡ Bridge:</span> {lastEventLog}
+        <div class="sm:w-72 px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-800 font-mono text-[11px] text-zinc-400 flex items-center gap-2 truncate">
+          <Terminal class="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+          <span class="truncate">{lastEventLog}</span>
         </div>
       </div>
     </div>
 
     <!-- High-Conversion Operator Booking Callout -->
-    <div class="p-5 rounded-2xl bg-gradient-to-r from-[#112217] to-[#0e1610] border border-emerald-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div class="p-5 rounded-xl bg-gradient-to-r from-zinc-900 to-zinc-950 border border-zinc-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2">
-          <span class="text-xs font-mono uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">KPAP Ethical Partner</span>
-          <span class="text-xs font-mono uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">TALA Licensed</span>
+          <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+            KPAP Ethical Partner
+          </span>
+          <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300">
+            TALA Licensed
+          </span>
         </div>
-        <h4 class="text-base font-bold text-white mt-1.5">
-          Ready to trek the {currentPackage.name}?
+        <h4 class="text-sm font-bold text-white mt-2">
+          Expedition Departures for {currentPackage.name}
         </h4>
-        <p class="text-xs text-neutral-300">
+        <p class="text-xs text-zinc-400 mt-0.5">
           Guaranteed 2026/2027 departures · Pulse oximeters &amp; emergency oxygen included on every climb.
         </p>
       </div>
@@ -443,15 +550,16 @@
       <div class="flex items-center gap-2.5 shrink-0">
         <a
           href="#inquire"
-          class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm transition"
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs transition shadow-md shadow-emerald-500/20 cursor-pointer"
         >
-          Book This Route
+          <span>Book Route</span>
+          <ArrowUpRight class="w-3.5 h-3.5" />
         </a>
         <button
           onclick={() => (showEmbedModal = true)}
-          class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-sm font-medium border border-white/15 transition cursor-pointer"
+          class="px-3.5 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-medium border border-zinc-700/60 transition cursor-pointer"
         >
-          Get 3D Widget
+          Embed Widget
         </button>
       </div>
     </div>
